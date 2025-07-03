@@ -90,14 +90,24 @@ describe("Arena damage calculator", function () {
   });
 
   it("should not attack a hero already at 0 LP", () => {
-    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const attackerWater = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const attackerFire = new Hero(HeroElement.Fire, 100, 0, 0, 0, 1000);
+    const attackerEarth = new Hero(HeroElement.Earth, 100, 0, 0, 0, 1000);
     const dead = new Hero(HeroElement.Water, 0, 0, 0, 0, 0);
-    const alive = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+    const alive1 = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+    const alive2 = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+    const alive3 = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
 
-    const defenders = arena.computeDamage(attacker, [dead, alive]);
+    const defenders1 = arena.computeDamage(attackerWater, [dead, alive1]);
+    const defenders2 = arena.computeDamage(attackerFire, [dead, alive2]);
+    const defenders3 = arena.computeDamage(attackerEarth, [dead, alive3]);
 
-    expect(defenders[0].lp).toBe(0);
-    expect(defenders[1].lp).toBe(900); 
+    expect(defenders1[0].lp).toBe(0);
+    expect(defenders1[1].lp).toBe(900);
+    expect(defenders2[0].lp).toBe(0);
+    expect(defenders2[1].lp).toBe(920);
+    expect(defenders3[0].lp).toBe(0);
+    expect(defenders3[1].lp).toBe(880);
   });
 
   it("should apply lethality to a critical blow", () => {
