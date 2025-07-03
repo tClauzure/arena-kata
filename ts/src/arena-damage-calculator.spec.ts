@@ -81,4 +81,34 @@ describe("Arena damage calculator", function () {
     expect(result3[0].element).toBe(HeroElement.Fire);
   });
 
+  it("should not lower LPs below 0", () => {
+    const attacker = new Hero(HeroElement.Water, 5000, 0, 0, 0, 1000);
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 10);
+    const result = arena.computeDamage(attacker, [defender]);
+
+    expect(result[0].lp).toBe(0);
+  });
+
+  it("should not attack a hero already at 0 LP", () => {
+    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const dead = new Hero(HeroElement.Water, 0, 0, 0, 0, 0);
+    const alive = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+
+    const defenders = arena.computeDamage(attacker, [dead, alive]);
+
+    expect(defenders[0].lp).toBe(0);
+    expect(defenders[1].lp).toBe(900); 
+  });
+
+  it("should apply lethality to a critical blow", () => {
+    const attacker = new Hero(HeroElement.Water, 100, 0, 1000, 100, 1000);
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000); 
+
+    const defenders = arena.computeDamage(attacker, [defender]);
+
+    // Dégâts critiques : 100 + (0.5 + 1000 / 5000) * 100 = 100 + 70 = 170
+    expect(defenders[0].lp).toBe(830);
+  });
+
+
 });
