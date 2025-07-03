@@ -9,7 +9,14 @@ describe("Arena damage calculator", function () {
   beforeEach(() => {
     arena = new ArenaDamageCalculator();
   });
+  it("should return an defender", () => {
+    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
 
+    const result = arena.computeDamage(attacker, [defender]);
+
+    expect(result.length).toBe(1);
+  })
   it("should inflict gross damage without bonus or buff", () => {
     const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
     const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
