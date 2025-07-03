@@ -102,6 +102,21 @@ describe("Arena damage calculator", function () {
     expect(result3[0].element).toBe(HeroElement.Fire);
   });
 
+  it("should compute damage correctly to neutral", () => {
+    const alicia = new Hero(HeroElement.Fire, 100, 0, 0, 0, 1000);
+    const charlie = new Hero(HeroElement.Earth, 100, 0, 0, 0, 1000);
+    const dave = new Hero(HeroElement.Fire, 100, 0, 0, 0, 1000);
+    const bob = new Hero(HeroElement.Earth, 100, 0, 0, 0, 1000);
+
+    const result1 = arena.computeDamage(alicia, [dave]);
+    const result2 = arena.computeDamage(charlie, [bob]);
+
+    expect(result1[0].lp).toEqual(1000 - 100);
+    expect(result1[0].element).toBe(HeroElement.Fire);
+    expect(result2[0].lp).toEqual(1000 - 100);
+    expect(result2[0].element).toBe(HeroElement.Earth);
+  })
+
   it("should not lower LPs below 0", () => {
     const attacker = new Hero(HeroElement.Water, 5000, 0, 0, 0, 1000);
     const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 10);
