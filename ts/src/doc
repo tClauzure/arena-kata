@@ -1,0 +1,13 @@
+- combat 3v3
+-chaque tour 1 perso attak 1 adversaire
+-algo tour joueur
+- element pierre feuille ciseau( attk +20% -20%)
+- 1POW = 1dmg
+- 75def = -1% dmg
+- crit valeur 0-100
+- deg crit = 50%+ (leth/50)%
+- lp 0-inf
+- buff attk = +25%
+- buff def = -25%
+
+- target (1 hero buff, 2 neutre, 3 malus) pas mort

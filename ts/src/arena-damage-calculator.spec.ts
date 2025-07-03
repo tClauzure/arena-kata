@@ -4,13 +4,13 @@ import { Hero } from "./model/hero";
 import { HeroElement } from "./model/hero-element";
 import { Buff } from "./model/buff";
 
-describe("Arena damage calculator", function() {
+describe("Arena damage calculator", function () {
   let arena: ArenaDamageCalculator;
-  beforeEach(() =>{
+  beforeEach(() => {
     arena = new ArenaDamageCalculator();
   });
 
-   it("should inflict gross damage without bonus or buff", () => {
+  it("should inflict gross damage without bonus or buff", () => {
     const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
     const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
 
@@ -47,12 +47,20 @@ describe("Arena damage calculator", function() {
   });
 
   it("should reduce damage by 25% if the defender has the Defense buff", () => {
-  const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
-  const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
-  defender.buffs.push(Buff.Defense);
-  const result = arena.computeDamage(attacker, [defender]);
+    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+    defender.buffs.push(Buff.Defense);
+    const result = arena.computeDamage(attacker, [defender]);
 
-  expect(result[0].lp).toBe(925);
-});
+    expect(result[0].lp).toBe(925);
+  })
 
+  it("should have 3 defenders", () => {
+    const alicia = new Hero(HeroElement.Water, 1, 1, 1, 1, 1);
+    const defender1 = new Hero(HeroElement.Fire, 100, 100, 100, 100, 100);
+    const defender2 = new Hero(HeroElement.Earth, 100, 100, 100, 100, 100);
+    const defender3 = new Hero(HeroElement.Water, 100, 100, 100, 100, 100);
+
+    expect(arena.computeDamage(alicia, [defender1, defender2, defender3]).length).toBe(3);
+  })
 });
