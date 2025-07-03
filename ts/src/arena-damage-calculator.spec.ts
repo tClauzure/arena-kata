@@ -63,4 +63,22 @@ describe("Arena damage calculator", function () {
 
     expect(arena.computeDamage(alicia, [defender1, defender2, defender3]).length).toBe(3);
   })
+
+  it("should compute damage correctly when hero malus", () => {
+    const alicia = new Hero(HeroElement.Fire, 100, 0, 0, 0, 1000);
+    const bob = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const charlie = new Hero(HeroElement.Earth, 100, 0, 0, 0, 1000);
+
+    const result1 = arena.computeDamage(alicia, [bob]);
+    const result2 = arena.computeDamage(bob, [charlie]);
+    const result3 = arena.computeDamage(charlie, [alicia]);
+
+    expect(result1[0].lp).toEqual(1000 - 100 * 0.8);
+    expect(result1[0].element).toBe(HeroElement.Water);
+    expect(result2[0].lp).toEqual(1000 - 100 * 0.8);
+    expect(result2[0].element).toBe(HeroElement.Earth);
+    expect(result3[0].lp).toEqual(1000 - 100 * 0.8);
+    expect(result3[0].element).toBe(HeroElement.Fire);
+  });
+
 });
