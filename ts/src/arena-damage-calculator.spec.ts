@@ -8,6 +8,10 @@ describe("Arena damage calculator", function () {
   let arena: ArenaDamageCalculator;
   beforeEach(() => {
     arena = new ArenaDamageCalculator();
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+  });
+  afterEach(() => {
+    jest.restoreAllMocks(); // nettoyage après chaque test
   });
   it("should return an defender", () => {
     const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
