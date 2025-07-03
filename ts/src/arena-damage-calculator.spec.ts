@@ -55,6 +55,20 @@ describe("Arena damage calculator", function () {
     expect(result[0].lp).toBe(925);
   })
 
+  it("should combine the Attack buff with a critical hit", () => {
+  const attacker = new Hero(HeroElement.Water, 100, 0, 0, 100, 1000);
+  attacker.buffs.push(Buff.Attack);
+  const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+
+  const defenders = arena.computeDamage(attacker, [defender]);
+
+  // Dégâts normaux sur critique : 100 + (0.5 * 100) = 150
+  // Buff attaque : +25% de dégâts => +25 sur base et +25% sur bonus critique
+  // Dégâts supplémentaires : (100 * 0.25) + (50 * 0.25) = 25 + 12.5 = 37.5
+  // Total : 150 + 37.5 = 187.5 → arrondi vers le bas → 187
+  expect(defenders[0].lp).toBe(813);
+});
+
   it("should have 3 defenders", () => {
     const alicia = new Hero(HeroElement.Water, 1, 1, 1, 1, 1);
     const defender1 = new Hero(HeroElement.Fire, 100, 100, 100, 100, 100);
