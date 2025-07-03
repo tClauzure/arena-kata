@@ -9,7 +9,14 @@ describe("Arena damage calculator", function () {
   beforeEach(() => {
     arena = new ArenaDamageCalculator();
   });
+  it("should return an defender", () => {
+    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
 
+    const result = arena.computeDamage(attacker, [defender]);
+
+    expect(result.length).toBe(1);
+  })
   it("should inflict gross damage without bonus or buff", () => {
     const attacker = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
     const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
@@ -56,18 +63,18 @@ describe("Arena damage calculator", function () {
   })
 
   it("should combine the Attack buff with a critical hit", () => {
-  const attacker = new Hero(HeroElement.Water, 100, 0, 0, 100, 1000);
-  attacker.buffs.push(Buff.Attack);
-  const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
+    const attacker = new Hero(HeroElement.Water, 100, 0, 0, 100, 1000);
+    attacker.buffs.push(Buff.Attack);
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
 
-  const defenders = arena.computeDamage(attacker, [defender]);
+    const defenders = arena.computeDamage(attacker, [defender]);
 
-  // Dégâts normaux sur critique : 100 + (0.5 * 100) = 150
-  // Buff attaque : +25% de dégâts => +25 sur base et +25% sur bonus critique
-  // Dégâts supplémentaires : (100 * 0.25) + (50 * 0.25) = 25 + 12.5 = 37.5
-  // Total : 150 + 37.5 = 187.5 → arrondi vers le bas → 187
-  expect(defenders[0].lp).toBe(813);
-});
+    // Dégâts normaux sur critique : 100 + (0.5 * 100) = 150
+    // Buff attaque : +25% de dégâts => +25 sur base et +25% sur bonus critique
+    // Dégâts supplémentaires : (100 * 0.25) + (50 * 0.25) = 25 + 12.5 = 37.5
+    // Total : 150 + 37.5 = 187.5 → arrondi vers le bas → 187
+    expect(defenders[0].lp).toBe(813);
+  });
 
   it("should have 3 defenders", () => {
     const alicia = new Hero(HeroElement.Water, 1, 1, 1, 1, 1);
@@ -126,7 +133,7 @@ describe("Arena damage calculator", function () {
 
   it("should apply lethality to a critical blow", () => {
     const attacker = new Hero(HeroElement.Water, 100, 0, 1000, 100, 1000);
-    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000); 
+    const defender = new Hero(HeroElement.Water, 0, 0, 0, 0, 1000);
 
     const defenders = arena.computeDamage(attacker, [defender]);
 
@@ -134,5 +141,38 @@ describe("Arena damage calculator", function () {
     expect(defenders[0].lp).toBe(830);
   });
 
+  it("should compute damage correctly when hero bonus", () => {
+    const alicia = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const bob = new Hero(HeroElement.Fire, 100, 0, 0, 0, 1000);
+    const charlie = new Hero(HeroElement.Earth, 100, 0, 0, 0, 1000);
+
+    const result1 = arena.computeDamage(alicia, [bob]);
+    const result2 = arena.computeDamage(bob, [charlie]);
+    const result3 = arena.computeDamage(charlie, [alicia]);
+
+    expect(result1[0].lp).toEqual(1000 - 100 * 1.20);
+    expect(result1[0].element).toBe(HeroElement.Fire);
+    expect(result2[0].lp).toEqual(1000 - 100 * 1.20);
+    expect(result2[0].element).toBe(HeroElement.Earth);
+    expect(result3[0].lp).toEqual(1000 - 100 * 1.20);
+    expect(result3[0].element).toBe(HeroElement.Water);
+  });
+
+  it("should compute damage to the right defender", () => {
+    const alicia = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+    const bob = new Hero(HeroElement.Fire, 100, 0, 0, 0, 1000);
+    const charlie = new Hero(HeroElement.Earth, 100, 0, 0, 0, 1000);
+    const dave = new Hero(HeroElement.Water, 100, 0, 0, 0, 1000);
+
+    const result1 = arena.computeDamage(alicia, [charlie, bob, dave]);
+    const result2 = arena.computeDamage(dave, [charlie, alicia]);
+
+    expect(result1[1].lp).toEqual(1000 - 100 * 1.20);
+    expect(result1[0].lp).toEqual(1000);
+    expect(result1[2].lp).toEqual(1000);
+
+    expect(result2[1].lp).toEqual(1000 - 100);
+    expect(result2[0].lp).toEqual(1000);
+  })
 
 });
