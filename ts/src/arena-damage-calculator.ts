@@ -1,3 +1,4 @@
+/*arena-damage-calculator.ts*/
 import { HeroElement } from "./model/hero-element";
 import { Buff } from "./model/buff";
 import { Hero } from "./model/hero";

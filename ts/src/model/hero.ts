@@ -1,3 +1,4 @@
+/*hero.ts*/
 import { Buff } from "./buff";
 import { HeroElement } from "./hero-element";
 
